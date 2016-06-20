@@ -1,5 +1,6 @@
 "use strict";
 var parse_table = require("../src/parse/parse_table");
+var should = require('should')
 var parse_disambig = require("../src/parse/parse_disambig");
 var parse_infobox = require("../src/parse/parse_infobox");
 let hurricane = `{{Infobox Hurricane
@@ -19,6 +20,24 @@ let hurricane = `{{Infobox Hurricane
 | Areas=[[Florida]]
 | Hurricane season=[[2002 Atlantic hurricane season]]
 }}`;
+
+let bobby = `{{Infobox chess player
+ |name = Bobby Fischer
+ |image = Bobby Fischer 1960 in Leipzig in color.jpg
+ |image_size =
+ |caption = Fischer in 1960
+ |alt =
+ |birthname = Robert James Fischer
+ |country = United States <!-- delimiting via timespan is misleading - Fischer never lost his US citizenship --><br />Iceland (2005–08)
+ |birth_date = {{Birth date|1943|3|9}}
+ |birth_place = [[Chicago]], [[Illinois]], U.S.
+ |death_date = {{Death date and age|2008|1|17|1943|3|9}}
+ |death_place = [[Reykjavík]], Iceland
+ |title = [[Grandmaster (chess)|Grandmaster]] (1958)
+ |worldchampion = 1972–75
+ |peakrating = 2785 (July 1972 [[FIDE World Rankings|FIDE rating list]])<ref>{{Cite web|url=http://www.olimpbase.org/Elo/player/Fischer,%20Robert%20James.html|title=Fischer, Robert James|publisher=olimpbase.com|accessdate=2015-09-18}}</ref>
+}}`;
+
 describe("parse_infobox", function() {
   it("hurricane", function(done) {
     let o = parse_infobox(hurricane);
@@ -26,6 +45,13 @@ describe("parse_infobox", function() {
     o.Dissipated.text.should.be.equal("September 6, 2002");
     o["Hurricane season"].text.should.be.equal("2002 Atlantic hurricane season");
     o.Areas.links[0].page.should.be.equal("Florida");
+    done();
+  });
+
+  it("bobby fischer", function(done) {
+    let o = parse_infobox(bobby);
+    o.name.text.should.be.equal("Bobby Fischer");
+    o.birthname.text.should.be.equal("Robert James Fischer");
     done();
   });
 });

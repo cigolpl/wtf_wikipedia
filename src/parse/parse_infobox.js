@@ -6,6 +6,9 @@ function parse_infobox(str) {
   if (str) {
     //this collapsible list stuff is just a headache
     str = str.replace(/\{\{Collapsible list[^\}]{10,1000}\}\}/g, "");
+
+    str = str.replace(/\n\s*/g, "\n")
+
     str.replace(/\r/g, "").split(/\n/).forEach(function(l) {
       if (l.match(/^\|/)) {
         var key = l.match(/^\| ?(.{1,200}?)=/) || [];
